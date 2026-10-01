@@ -18,13 +18,21 @@ jobs:
       - name: Execute PHP script
         run: php bot.php
       
-      - name: Keep only last 50 configs
+      - name: Keep only last 50 configs and merge all
         run: |
+          mkdir -p Config
+          > Config/all_configs.txt
+          
           for file in Config/*.txt; do
-            if [ -f "$file" ]; then
+            if [ -f "$file" ] && [ "$(basename "$file")" != "all_configs.txt" ]; then
               tail -n 50 "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+              cat "$file" >> Config/all_configs.txt
+              echo "" >> Config/all_configs.txt
             fi
           done
+          
+          echo "✅ Merged all configs into Config/all_configs.txt"
+          echo "📊 Total lines: $(wc -l < Config/all_configs.txt)"
       
       - name: Push changes
         run: |
