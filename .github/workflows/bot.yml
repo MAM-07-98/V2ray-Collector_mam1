@@ -18,21 +18,23 @@ jobs:
       - name: Execute PHP script
         run: php bot.php
       
-      - name: Keep only last 50 configs and merge all
+      - name: Merge all configs into one file
         run: |
-          mkdir -p Config
-          > Config/all_configs.txt
+          > all_configs.txt
           
-          for file in Config/*.txt; do
-            if [ -f "$file" ] && [ "$(basename "$file")" != "all_configs.txt" ]; then
-              tail -n 50 "$file" > "$file.tmp" && mv "$file.tmp" "$file"
-              cat "$file" >> Config/all_configs.txt
-              echo "" >> Config/all_configs.txt
+          for file in sub/*; do
+            if [ -f "$file" ]; then
+              echo "📄 Processing: $file"
+              if [[ "$file" != *base64* ]]; then
+                cat "$file" >> all_configs.txt
+                echo "" >> all_configs.txt
+              fi
             fi
           done
           
-          echo "✅ Merged all configs into Config/all_configs.txt"
-          echo "📊 Total lines: $(wc -l < Config/all_configs.txt)"
+          echo "✅ Total lines: $(wc -l < all_configs.txt)"
+          echo "📊 First 5 lines:"
+          head -n 5 all_configs.txt
       
       - name: Push changes
         run: |
