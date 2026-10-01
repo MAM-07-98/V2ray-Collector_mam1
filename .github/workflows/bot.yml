@@ -2,15 +2,13 @@ name: "CONFIG COLLECTOR"
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '*/60 * * * *'
-    
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -18,22 +16,27 @@ jobs:
           php-version: '7.4'
           
       - name: Execute PHP script
+        run: php bot.php
+      
+      - name: Keep only last 50 configs
         run: |
-          php bot.php
-          git config credential.helper store
+          for file in Config/*.txt; do
+            if [ -f "$file" ]; then
+              tail -n 50 "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+            fi
+          done
       
       - name: Configure Git
         run: |
-          git config --global user.email "vip.mahditaheri@gmail.com"
-          git config --global user.name "MhdiTaheri"
-          git remote set-url origin https://github.com/MhdiTaheri/V2rayCollector.git
+          git config --global user.email "YOUR_EMAIL@example.com"
+          git config --global user.name "YOUR_USERNAME"
+          git remote set-url origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
       
-      - name: Push changes with rebase
+      - name: Push changes
         run: |
           git add -A
-          git commit -m "V0.2 🚀 - $(TZ='Asia/Tehran' date '+%Y-%m-%d %H:%M:%S')"
+          git commit -m "V0.2 🚀 - $(TZ='Asia/Tehran' date '+%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
           git pull --rebase origin main
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.PUSH_BOT }}
-
