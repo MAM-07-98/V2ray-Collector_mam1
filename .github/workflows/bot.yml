@@ -26,17 +26,12 @@ jobs:
             fi
           done
       
-      - name: Configure Git
-        run: |
-          git config --global user.email "YOUR_EMAIL@example.com"
-          git config --global user.name "YOUR_USERNAME"
-          git remote set-url origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-      
       - name: Push changes
         run: |
+          git config --global user.email "${{ secrets.GIT_EMAIL }}"
+          git config --global user.name "${{ secrets.GIT_NAME }}"
           git add -A
-          git commit -m "V0.2 🚀 - $(TZ='Asia/Tehran' date '+%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-          git pull --rebase origin main
+          git commit -m "V0.2 🚀 - $(TZ='Asia/Tehran' date '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.PUSH_BOT }}
