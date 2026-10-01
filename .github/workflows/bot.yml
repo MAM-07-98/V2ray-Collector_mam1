@@ -31,7 +31,5 @@ jobs:
           git config --global user.email "${{ secrets.GIT_EMAIL }}"
           git config --global user.name "${{ secrets.GIT_NAME }}"
           git add -A
-          git commit -m "V0.2 🚀 - $(TZ='Asia/Tehran' date '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.PUSH_BOT }}
+          git commit -m "Update - $(TZ='Asia/Tehran' date '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
+          git push https://${{ secrets.PUSH_BOT }}@github.com/MAM-07-98/V2ray-Collector_mam1.git HEAD:main
