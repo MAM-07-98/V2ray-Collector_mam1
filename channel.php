@@ -1,5 +1,5 @@
 <?php
 $telegramChannelURLs = [
-    "https://t.me/ConfigsHUB",
+    "https://t.me/s/ConfigsHUB",
 ];
 ?>
